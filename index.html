@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SPOOF</title>
+<meta name="description" content="SPOOF makes free plugins for Adobe Photoshop and Illustrator: G.A.R.V.I.S and M.O.N.D.A.Y.">
+<link rel="icon" href="assets/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: black ground, white type, like the logos. Wide hero with the two plugin badges, then two product panels side by side, a "next up" bench, house rules, and a loud Instagram sign-off. Single dark theme on purpose: the brand is white on black everywhere. */
+:root {
+  --ink: #0a0a0a; --panel: #141413; --raise: #1d1d1b; --line: #2a2a27;
+  --paper: #f5f4f0; --dim: #9a9993; --faint: #6c6b66;
+  --garvis: #3aa7e6; --monday: #ff9d3a;
+  --display: "Bagel Fat One", "Arial Rounded MT Bold", "Trebuchet MS", sans-serif;
+  --body: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--ink); color: var(--paper); font: 17px/1.6 var(--body); -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+img { max-width: 100%; display: block; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; border-radius: 6px; }
+.eyebrow { font: 500 12px/1.4 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--dim); margin: 0; }
+h1, h2 { font-family: var(--display); font-weight: 400; letter-spacing: -.01em; line-height: .98; margin: 0; text-wrap: balance; }
+h2 { font-size: clamp(34px, 5vw, 56px); }
+
+/* header */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 22px; flex-wrap: wrap; }
+.top .mark img { height: 30px; width: auto; }
+.top nav { display: flex; gap: 22px; flex-wrap: wrap; }
+.top nav a { text-decoration: none; font-weight: 600; font-size: 15px; color: var(--dim); }
+.top nav a:hover { color: var(--paper); }
+
+/* hero */
+.hero { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 40px; align-items: center; padding-block: 48px 84px; }
+.hero h1 { font-size: clamp(54px, 9vw, 112px); margin-top: 18px; }
+.hero h1 span { display: block; color: var(--dim); }
+.lede { font-size: clamp(18px, 2vw, 21px); color: var(--dim); max-width: 34ch; margin: 24px 0 32px; }
+.lede b { color: var(--paper); font-weight: 600; }
+.ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font: 700 16px var(--body); padding: 14px 24px; border-radius: 999px; border: 2px solid var(--paper); transition: transform .15s ease, background .15s ease, color .15s ease; }
+.btn.solid { background: var(--paper); color: var(--ink); }
+.btn.ghost { color: var(--paper); }
+.btn:hover { transform: translateY(-2px); }
+.btn.ghost:hover { background: var(--paper); color: var(--ink); }
+.btn small { font: 500 12px var(--mono); opacity: .7; }
+.stat { margin-top: 26px; font: 500 13px var(--mono); color: var(--dim); min-height: 20px; }
+.stat b { color: var(--paper); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+.badges { position: relative; aspect-ratio: 1 / 1; max-width: 460px; width: 100%; justify-self: center; }
+.badge { position: absolute; width: 64%; aspect-ratio: 1; border-radius: 50%; background: var(--panel); border: 2px solid var(--line); display: grid; place-items: center; text-decoration: none; transition: transform .25s ease; }
+.badge img { width: 78%; }
+.badge.g { left: 0; top: 0; transform: rotate(-8deg); }
+.badge.m { right: 0; bottom: 0; transform: rotate(7deg); }
+.badge.g:hover { transform: rotate(-3deg) scale(1.03); border-color: var(--garvis); }
+.badge.m:hover { transform: rotate(2deg) scale(1.03); border-color: var(--monday); }
+.badge .tag { position: absolute; font: 500 11px var(--mono); letter-spacing: .12em; text-transform: uppercase; background: var(--ink); border: 1px solid var(--line); padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+.badge.g .tag { top: 6%; left: 50%; translate: -50% 0; color: var(--garvis); }
+.badge.m .tag { bottom: 6%; left: 50%; translate: -50% 0; color: var(--monday); }
+@media (prefers-reduced-motion: no-preference) {
+  .badge.g { animation: bobG 7s ease-in-out infinite; }
+  .badge.m { animation: bobM 8s ease-in-out infinite; }
+  @keyframes bobG { 50% { translate: 0 -10px; } }
+  @keyframes bobM { 50% { translate: 0 10px; } }
+}
+
+/* products */
+section.block { padding-block: 72px; border-top: 1px solid var(--line); }
+.head { display: flex; justify-content: space-between; align-items: end; gap: 20px; flex-wrap: wrap; margin-bottom: 36px; }
+.head p { color: var(--dim); max-width: 42ch; margin: 0; }
+.products { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.prod { --hue: var(--paper); background: var(--panel); border: 1px solid var(--line); border-radius: 28px; padding: 28px; display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.prod.g { --hue: var(--garvis); } .prod.m { --hue: var(--monday); }
+.prodTop { display: flex; gap: 18px; align-items: center; }
+.prodTop img { width: 88px; height: 88px; flex: none; border-radius: 50%; background: var(--ink); padding: 8px; border: 1px solid var(--line); }
+.prodTop h3 { font: 800 26px/1.1 var(--body); letter-spacing: .06em; margin: 0; }
+.prodTop .nick { color: var(--dim); margin: 2px 0 0; font-size: 15px; }
+.prodTop .nick b { color: var(--hue); font-weight: 600; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { font: 500 12px var(--mono); padding: 4px 11px; border-radius: 999px; border: 1px solid var(--line); color: var(--dim); white-space: nowrap; }
+.chip.hue { color: var(--hue); border-color: color-mix(in srgb, var(--hue) 45%, transparent); }
+.tools { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+.tools li { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px; color: var(--dim); }
+.tools li b { color: var(--paper); font-weight: 600; }
+.prodFoot { margin-top: auto; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.prod .btn.solid { background: var(--hue); border-color: var(--hue); color: var(--ink); }
+.prod .soon { font: 700 15px var(--body); padding: 12px 20px; border-radius: 999px; border: 2px dashed var(--line); color: var(--dim); }
+.prodFoot .link { font-size: 14px; color: var(--dim); }
+.prodFoot .link:hover { color: var(--paper); }
+.install { margin-top: 20px; display: grid; grid-template-columns: auto repeat(3, minmax(0, 1fr)); gap: 14px 24px; align-items: start; background: var(--raise); border-radius: 20px; padding: 20px 24px; font-size: 15px; color: var(--dim); }
+.install .eyebrow { padding-top: 3px; }
+.install div b { color: var(--paper); }
+.install .n { font: 500 12px var(--mono); color: var(--paper); display: block; margin-bottom: 2px; }
+
+/* bench */
+.bench { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.lane h4 { font: 500 12px var(--mono); letter-spacing: .14em; text-transform: uppercase; margin: 0 0 12px; }
+.lane.g h4 { color: var(--garvis); } .lane.m h4 { color: var(--monday); }
+.lane ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.lane li { border: 1px dashed var(--line); border-radius: 16px; padding: 14px 18px; font-size: 15px; color: var(--dim); }
+.lane li b { color: var(--paper); display: block; font-weight: 600; font-size: 16px; }
+
+/* rules */
+.rules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.rule { padding-top: 18px; border-top: 2px solid var(--paper); }
+.rule h3 { font: 800 21px/1.2 var(--body); margin: 0 0 8px; }
+.rule p { margin: 0; color: var(--dim); font-size: 15px; max-width: 34ch; }
+
+/* follow */
+.follow { padding-block: 84px 64px; border-top: 1px solid var(--line); text-align: left; }
+.follow .ig { display: inline-block; font-family: var(--display); font-size: clamp(44px, 10vw, 128px); line-height: 1; text-decoration: none; margin-top: 16px; overflow-wrap: anywhere; transition: color .15s ease; }
+.follow .ig:hover { color: var(--dim); }
+.follow p { color: var(--dim); max-width: 52ch; margin: 22px 0 0; }
+.follow p a { color: var(--paper); }
+
+footer { border-top: 1px solid var(--line); padding-block: 28px 40px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; color: var(--faint); font-size: 13px; }
+footer img { height: 22px; width: auto; opacity: .9; }
+footer p { margin: 0; max-width: 60ch; }
+
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; padding-block: 24px 64px; }
+  .badges { max-width: 360px; order: -1; }
+  .products, .bench { grid-template-columns: 1fr; }
+  .rules { grid-template-columns: 1fr; }
+  .install { grid-template-columns: 1fr; }
+}
+@media (max-width: 460px) {
+  .prod { padding: 22px; border-radius: 22px; }
+  .tools li { grid-template-columns: 1fr; gap: 2px; }
+  .prodTop img { width: 68px; height: 68px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <a class="mark" href="#top" aria-label="SPOOF home"><img src="assets/spoof.png" alt="SPOOF" width="104" height="38"></a>
+    <nav aria-label="Main">
+      <a href="#plugins">Plugins</a>
+      <a href="#next">Next up</a>
+      <a href="https://www.instagram.com/spoof_by_g" target="_blank" rel="noopener">Instagram</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Free plugins for Photoshop &amp; Illustrator</p>
+        <h1>We do the donkey work.<span>You design.</span></h1>
+        <p class="lede">SPOOF builds <b>G.A.R.V.I.S</b> and <b>M.O.N.D.A.Y</b>, two assistants that take the repetitive steps off your plate. Made by a designer, for the steps every designer repeats.</p>
+        <div class="ctas">
+          <a class="btn solid" href="#garvis">Get G.A.R.V.I.S</a>
+          <a class="btn ghost" href="#monday">Meet M.O.N.D.A.Y</a>
+        </div>
+        <p class="stat" id="stat" aria-live="polite"></p>
+      </div>
+      <div class="badges" aria-hidden="true">
+        <a class="badge g" href="#garvis" tabindex="-1"><img src="assets/garvis.png" alt=""><span class="tag">Photoshop</span></a>
+        <a class="badge m" href="#monday" tabindex="-1"><img src="assets/monday.png" alt=""><span class="tag">Illustrator</span></a>
+      </div>
+    </section>
+
+    <section class="block" id="plugins">
+      <div class="head">
+        <div><p class="eyebrow">The assistants</p><h2>Two plugins, one job</h2></div>
+        <p>Each one lives in a panel inside the Adobe app you already use. Pick a tool, set it once, and let it repeat the boring part.</p>
+      </div>
+
+      <div class="products">
+        <article class="prod g" id="garvis">
+          <div class="prodTop">
+            <img src="assets/garvis.png" alt="G.A.R.V.I.S logo">
+            <div><h3>G.A.R.V.I.S</h3><p class="nick">Ghany's <b>JARVIS</b>, for Photoshop</p></div>
+          </div>
+          <div class="chips"><span class="chip hue" id="gVer">V2.0.0</span><span class="chip">Photoshop 23.3+</span><span class="chip">Windows &amp; macOS</span><span class="chip">Free</span></div>
+          <ul class="tools">
+            <li><b>Resize</b><span>Crop or expand to square, landscape or portrait ratios. Expand fills the new area with Firefly.</span></li>
+            <li><b>Upscale</b><span>2X to 8X with an enhance pass tuned for People, Landscape, Food or Product.</span></li>
+            <li><b>Create</b><span>Ready social files (post, carousel, story) and CMYK print files with margins and guides.</span></li>
+            <li><b>Color</b><span>Built-in looks, capture your own from reference photos, import or export .cube LUTs.</span></li>
+            <li><b>Batch</b><span>Run any tool on a whole folder and save as JPEG, PNG or PSD.</span></li>
+          </ul>
+          <div class="prodFoot">
+            <a class="btn solid" id="gDl" href="https://github.com/ghanydesigns-dotcom/garvis/releases/latest">Download <small id="gDlVer">.ccx</small></a>
+            <a class="link" href="https://github.com/ghanydesigns-dotcom/garvis/releases" target="_blank" rel="noopener">All versions</a>
+          </div>
+        </article>
+
+        <article class="prod m" id="monday">
+          <div class="prodTop">
+            <img src="assets/monday.png" alt="M.O.N.D.A.Y logo">
+            <div><h3>M.O.N.D.A.Y</h3><p class="nick">Ghany's <b>FRIDAY</b>, for Illustrator</p></div>
+          </div>
+          <div class="chips"><span class="chip hue">V0.5.0 · in development</span><span class="chip">Illustrator 2020+</span><span class="chip">Free</span></div>
+          <ul class="tools">
+            <li><b>Text</b><span>Edit many text frames at once, add prefixes, number sequences, align to baseline, paste and keep styles.</span></li>
+            <li><b>Mosaic</b><span>Arrange selected images into a grid with set columns and spacing.</span></li>
+            <li><b>Export</b><span>Every artboard as PNG, JPG, SVG or PDF, named your way. Being built now.</span></li>
+          </ul>
+          <div class="prodFoot">
+            <span class="soon">Coming to Adobe Marketplace</span>
+            <a class="link" href="https://www.instagram.com/spoof_by_g" target="_blank" rel="noopener">Follow the build</a>
+          </div>
+        </article>
+      </div>
+
+      <div class="install" aria-label="How to install a .ccx file">
+        <p class="eyebrow">Install</p>
+        <div><span class="n">01</span>Download the <b>.ccx</b> file.</div>
+        <div><span class="n">02</span>Double-click it. Creative Cloud installs it for you.</div>
+        <div><span class="n">03</span>In Photoshop, open <b>Plugins → G.A.R.V.I.S</b>.</div>
+      </div>
+    </section>
+
+    <section class="block" id="next">
+      <div class="head">
+        <div><p class="eyebrow">On the bench</p><h2>Next up</h2></div>
+        <p>Planned features, many picked from requests on Adobe Community. Not in the plugins yet.</p>
+      </div>
+      <div class="bench">
+        <div class="lane g">
+          <h4>G.A.R.V.I.S</h4>
+          <ul>
+            <li><b>Again</b>Rerun the last tool with the same settings on the current file.</li>
+            <li><b>Bake generative layers</b>Turn Generative Fill and Upscale layers into normal pixel layers in one click.</li>
+            <li><b>Quick bar</b>Arrange, flip, rotate and group, always one click away.</li>
+          </ul>
+        </div>
+        <div class="lane m">
+          <h4>M.O.N.D.A.Y</h4>
+          <ul>
+            <li><b>Print-ready in one click</b>Outline text, embed images, convert to CMYK and export the PDF.</li>
+            <li><b>Recolor to a brand palette</b>Map selected artwork to the nearest swatch of a saved palette.</li>
+            <li><b>Carousel artboards</b>A row of evenly spaced artboards at Instagram or LinkedIn sizes.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="rules">
+        <div class="rule"><h3>Free to use</h3><p>Both plugins are free. If one saves you an afternoon, you can buy me a coffee from its Info tab.</p></div>
+        <div class="rule"><h3>Collects nothing</h3><p>No tracking, no accounts. SPOOF never sees your files or uses them to train AI.</p></div>
+        <div class="rule"><h3>Your Adobe credits</h3><p>Generative features run on Adobe's own servers with your own generative credits.</p></div>
+      </div>
+    </section>
+
+    <section class="follow">
+      <p class="eyebrow">Follow along</p>
+      <a class="ig" href="https://www.instagram.com/spoof_by_g" target="_blank" rel="noopener">@spoof_by_g</a>
+      <p>New versions, tool demos and what's being built next. Want updates first? <a href="https://chat.whatsapp.com/BeVYaUoUoZW2Ehd3lqz6Mv" target="_blank" rel="noopener">Join the WhatsApp group</a>.</p>
+    </section>
+  </main>
+
+  <footer>
+    <img src="assets/spoof.png" alt="SPOOF LLC" width="62" height="22">
+    <p>© 2026 SPOOF LLC · Mohamed Abdelghany. Adobe, Photoshop and Illustrator are trademarks of Adobe. SPOOF is not affiliated with Adobe.</p>
+  </footer>
+</div>
+
+<script>
+// G.A.R.V.I.S download counts come from GitHub Releases: GitHub counts every .ccx download per version.
+(async () => {
+  const REPO = "ghanydesigns-dotcom/garvis";
+  try {
+    const r = await fetch(`https://api.github.com/repos/${REPO}/releases?per_page=100`, { headers: { Accept: "application/vnd.github+json" } });
+    if (!r.ok) return;
+    const rel = (await r.json()).filter((x) => !x.draft).map((x) => {
+      const a = (x.assets || []).find((f) => /\.ccx$/i.test(f.name));
+      return a && { tag: x.tag_name.replace(/^v/i, ""), url: a.browser_download_url, n: a.download_count, pre: x.prerelease };
+    }).filter(Boolean);
+    if (!rel.length) return;
+    const latest = rel.find((x) => !x.pre) || rel[0];
+    document.getElementById("gDl").href = latest.url;
+    document.getElementById("gDlVer").textContent = "V" + latest.tag;
+    document.getElementById("gVer").textContent = "V" + latest.tag;
+    const total = rel.reduce((s, x) => s + x.n, 0);
+    if (total > 0) {
+      const s = document.getElementById("stat");
+      const b = document.createElement("b"); b.textContent = total.toLocaleString();
+      s.replaceChildren(b, document.createTextNode(" downloads of G.A.R.V.I.S so far"));
+    }
+  } catch (e) { /* offline or rate-limited: the page works without the count */ }
+})();
+</script>
+</body>
+</html>
