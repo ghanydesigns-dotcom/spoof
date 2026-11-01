@@ -277,19 +277,19 @@ footer .fnote { margin-top: 4px; }
 </div>
 
 <script>
-// Download counts under each Download button: BASE (downloads before the counter existed) + anonymous clicks counted on counterapi.dev (one number per plugin, no IP, no cookies, no accounts). If the counter is unreachable the text stays at the BASE.
+// Download counts under each Download button: BASE (downloads before the counter existed) + anonymous clicks counted on abacus.jasoncameron.dev (one number per plugin, no accounts, no cookies). If the counter is unreachable the text stays at the BASE.
 (() => {
-  const API = "https://api.counterapi.dev/v1/spoof-by-g/";
+  const API = "https://abacus.jasoncameron.dev/";
   const read = (r) => r.ok ? r.json() : null;
   const track = (key, base, btnId, outId) => {
     const out = document.getElementById(outId), btn = document.getElementById(btnId);
     const apply = (d) => {
-      if (!d || typeof d.count !== "number") return;
-      const b = document.createElement("b"); b.textContent = (base + d.count).toLocaleString() + "+";
+      if (!d || typeof d.value !== "number") return;
+      const b = document.createElement("b"); b.textContent = (base + d.value).toLocaleString() + "+";
       out.replaceChildren(b, document.createTextNode(" Downloads"));
     };
-    fetch(API + key + "/").then(read).then(apply).catch(() => {});
-    btn.addEventListener("click", () => { fetch(API + key + "/up", { keepalive: true }).then(read).then(apply).catch(() => {}); });
+    fetch(API + "get/spoof-by-g/" + key).then(read).then(apply).catch(() => {});
+    btn.addEventListener("click", () => { fetch(API + "hit/spoof-by-g/" + key, { keepalive: true }).then(read).then(apply).catch(() => {}); });
   };
   track("garvis-download", 50, "gDl", "gCount");
   track("monday-download", 5, "mDl", "mCount");
