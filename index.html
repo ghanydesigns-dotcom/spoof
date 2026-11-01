@@ -51,8 +51,8 @@ h2 { font-size: clamp(34px, 5vw, 56px); }
 .btn:hover { transform: translateY(-2px); }
 .btn.ghost:hover { background: var(--paper); color: var(--ink); }
 .btn small { font: 500 12px var(--mono); opacity: .7; }
-.stat { margin-top: 26px; font: 500 13px var(--mono); color: var(--dim); min-height: 20px; }
-.stat b { color: var(--paper); font-weight: 500; font-variant-numeric: tabular-nums; }
+.dlcount { margin: -6px 0 0; font: 500 13px var(--mono); color: var(--dim); }
+.dlcount b { color: var(--hue); font-weight: 500; font-variant-numeric: tabular-nums; }
 
 .badges { position: relative; aspect-ratio: 1 / 1; max-width: 460px; width: 100%; justify-self: center; }
 .badge { position: absolute; width: 64%; aspect-ratio: 1; border-radius: 50%; background: var(--panel); border: 2px solid var(--line); display: grid; place-items: center; text-decoration: none; transition: transform .25s ease; }
@@ -161,7 +161,6 @@ footer p { margin: 0; max-width: 60ch; }
           <a class="btn solid" href="#garvis">Get G.A.R.V.I.S</a>
           <a class="btn ghost" href="#monday">Meet M.O.N.D.A.Y</a>
         </div>
-        <p class="stat" id="stat" aria-live="polite"></p>
       </div>
       <div class="badges" aria-hidden="true">
         <a class="badge g" href="#garvis" tabindex="-1"><img src="assets/garvis.png" alt=""><span class="tag">Photoshop</span></a>
@@ -192,6 +191,7 @@ footer p { margin: 0; max-width: 60ch; }
           <div class="prodFoot">
             <a class="btn solid" id="gDl" href="https://drive.google.com/file/d/19Ea-tbUtkUUzyOa3R_lCejphECywetYe/view?usp=drive_link" target="_blank" rel="noopener noreferrer">Download <small id="gDlVer">.ccx</small></a>
           </div>
+          <p class="dlcount" id="gCount" aria-live="polite"><b>50+</b> Downloads</p>
         </article>
 
         <article class="prod m" id="monday">
@@ -267,28 +267,20 @@ footer p { margin: 0; max-width: 60ch; }
 </div>
 
 <script>
-// G.A.R.V.I.S download counts come from GitHub Releases: GitHub counts every .ccx download per version.
-(async () => {
-  const REPO = "ghanydesigns-dotcom/garvis";
-  try {
-    const r = await fetch(`https://api.github.com/repos/${REPO}/releases?per_page=100`, { headers: { Accept: "application/vnd.github+json" } });
-    if (!r.ok) return;
-    const rel = (await r.json()).filter((x) => !x.draft).map((x) => {
-      const a = (x.assets || []).find((f) => /\.ccx$/i.test(f.name));
-      return a && { tag: x.tag_name.replace(/^v/i, ""), url: a.browser_download_url, n: a.download_count, pre: x.prerelease };
-    }).filter(Boolean);
-    if (!rel.length) return;
-    const latest = rel.find((x) => !x.pre) || rel[0];
-    document.getElementById("gDl").href = latest.url;
-    document.getElementById("gDlVer").textContent = "V" + latest.tag;
-    document.getElementById("gVer").textContent = "V" + latest.tag;
-    const total = rel.reduce((s, x) => s + x.n, 0);
-    if (total > 0) {
-      const s = document.getElementById("stat");
-      const b = document.createElement("b"); b.textContent = total.toLocaleString();
-      s.replaceChildren(b, document.createTextNode(" downloads of G.A.R.V.I.S so far"));
-    }
-  } catch (e) { /* offline or rate-limited: the page works without the count */ }
+// G.A.R.V.I.S download count under the Download button: BASE (downloads before the counter existed) + anonymous clicks counted on counterapi.dev (one number, no IP, no cookies, no accounts). Shows "50+ Downloads" if the counter is unreachable.
+(() => {
+  const BASE = 50;
+  const API = "https://api.counterapi.dev/v1/spoof-by-g/garvis-download";
+  const out = document.getElementById("gCount");
+  const btn = document.getElementById("gDl");
+  const show = (n) => {
+    const b = document.createElement("b"); b.textContent = (BASE + n).toLocaleString() + "+";
+    out.replaceChildren(b, document.createTextNode(" Downloads"));
+  };
+  const read = (r) => r.ok ? r.json() : null;
+  const apply = (d) => { if (d && typeof d.count === "number") show(d.count); };
+  fetch(API + "/").then(read).then(apply).catch(() => {});
+  btn.addEventListener("click", () => { fetch(API + "/up", { keepalive: true }).then(read).then(apply).catch(() => {}); });
 })();
 </script>
 </body>
