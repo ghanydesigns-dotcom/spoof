@@ -206,9 +206,11 @@ footer p { margin: 0; max-width: 60ch; }
             <li><b>Export</b><span>Every artboard as PNG, JPG, SVG or PDF, named your way. Being built now.</span></li>
           </ul>
           <div class="prodFoot">
-            <span class="soon">Coming soon</span>
+            <a class="btn solid" id="mDl" href="https://drive.google.com/file/d/1KhPf5uHFnMJaFnZnCdbB7RjNTx3E8G-T/view?usp=drive_link" target="_blank" rel="noopener noreferrer">Download for Windows</a>
+            <span class="soon">Mac: coming soon</span>
             <a class="link" href="https://www.instagram.com/spoof_by_g" target="_blank" rel="noopener">Follow the build</a>
           </div>
+          <p class="dlcount" id="mCount" aria-live="polite"><b>5+</b> Downloads</p>
         </article>
       </div>
 
@@ -267,20 +269,22 @@ footer p { margin: 0; max-width: 60ch; }
 </div>
 
 <script>
-// G.A.R.V.I.S download count under the Download button: BASE (downloads before the counter existed) + anonymous clicks counted on counterapi.dev (one number, no IP, no cookies, no accounts). Shows "50+ Downloads" if the counter is unreachable.
+// Download counts under each Download button: BASE (downloads before the counter existed) + anonymous clicks counted on counterapi.dev (one number per plugin, no IP, no cookies, no accounts). If the counter is unreachable the text stays at the BASE.
 (() => {
-  const BASE = 50;
-  const API = "https://api.counterapi.dev/v1/spoof-by-g/garvis-download";
-  const out = document.getElementById("gCount");
-  const btn = document.getElementById("gDl");
-  const show = (n) => {
-    const b = document.createElement("b"); b.textContent = (BASE + n).toLocaleString() + "+";
-    out.replaceChildren(b, document.createTextNode(" Downloads"));
-  };
+  const API = "https://api.counterapi.dev/v1/spoof-by-g/";
   const read = (r) => r.ok ? r.json() : null;
-  const apply = (d) => { if (d && typeof d.count === "number") show(d.count); };
-  fetch(API + "/").then(read).then(apply).catch(() => {});
-  btn.addEventListener("click", () => { fetch(API + "/up", { keepalive: true }).then(read).then(apply).catch(() => {}); });
+  const track = (key, base, btnId, outId) => {
+    const out = document.getElementById(outId), btn = document.getElementById(btnId);
+    const apply = (d) => {
+      if (!d || typeof d.count !== "number") return;
+      const b = document.createElement("b"); b.textContent = (base + d.count).toLocaleString() + "+";
+      out.replaceChildren(b, document.createTextNode(" Downloads"));
+    };
+    fetch(API + key + "/").then(read).then(apply).catch(() => {});
+    btn.addEventListener("click", () => { fetch(API + key + "/up", { keepalive: true }).then(read).then(apply).catch(() => {}); });
+  };
+  track("garvis-download", 50, "gDl", "gCount");
+  track("monday-download", 5, "mDl", "mCount");
 })();
 </script>
 </body>
