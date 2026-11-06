@@ -51,8 +51,6 @@ h2 { font-size: clamp(34px, 5vw, 56px); }
 .btn:hover { transform: translateY(-2px); }
 .btn.ghost:hover { background: var(--paper); color: var(--ink); }
 .btn small { font: 500 12px var(--mono); opacity: .7; }
-.dlcount { margin: -6px 0 0; font: 500 13px var(--mono); color: var(--dim); }
-.dlcount b { color: var(--hue); font-weight: 500; font-variant-numeric: tabular-nums; }
 
 .badges { position: relative; aspect-ratio: 1 / 1; max-width: 460px; width: 100%; justify-self: center; }
 .badge { position: absolute; width: 64%; aspect-ratio: 1; border-radius: 50%; background: var(--panel); border: 2px solid var(--line); display: grid; place-items: center; text-decoration: none; transition: transform .25s ease; }
@@ -89,13 +87,8 @@ section.block { padding-block: 72px; border-top: 1px solid var(--line); }
 .tools { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; border-top: 1px solid var(--line); }
 .tools li { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px; color: var(--dim); }
 .tools li b { color: var(--paper); font-weight: 600; }
-.prodFoot { margin-top: auto; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-.prod .btn.solid { background: var(--hue); border-color: var(--hue); color: var(--ink); }
-.prod .soon { font: 700 15px var(--body); padding: 12px 20px; border-radius: 999px; border: 2px dashed var(--line); color: var(--dim); }
-.prod .btn .adobeLogo { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; margin-right: 10px; border-radius: 8px; background: #fff; vertical-align: middle; }
-.prod .btn .adobeLogo svg { width: 16px; height: 14px; }
-.prodFoot .link { font-size: 14px; color: var(--dim); }
-.prodFoot .link:hover { color: var(--paper); }
+.btn .adobeLogo { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; margin-right: 10px; border-radius: 8px; background: #fff; vertical-align: middle; }
+.btn .adobeLogo svg { width: 16px; height: 14px; }
 
 /* bench */
 .bench { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
@@ -158,8 +151,7 @@ footer .fnote { margin-top: 4px; }
         <h1>We do the donkey work.<span>So you get Creative.</span></h1>
         <p class="lede">SPOOF builds <b>G.A.R.V.I.S</b> and <b>M.O.N.D.A.Y</b>, two assistants that take the repetitive steps off your plate. Made by a designer, for the steps every designer repeats.</p>
         <div class="ctas">
-          <a class="btn solid" href="#garvis">Get G.A.R.V.I.S</a>
-          <a class="btn ghost" href="#monday">Meet M.O.N.D.A.Y</a>
+          <a class="btn solid" href="https://exchange.adobe.com/publisher/cc/d9dcdcfb-51c0-45db-80f6-403f7ba4c2c5/spoof" target="_blank" rel="noopener noreferrer"><span class="adobeLogo" aria-hidden="true"><svg viewBox="0 0 30 26" xmlns="http://www.w3.org/2000/svg"><path fill="#fa0f00" d="M19 0h11v26zM11.1 0H0v26zM15 9.6L22.1 26h-4.6l-2.1-5.3h-5.4z"/></svg></span>Download from Adobe</a>
         </div>
       </div>
       <div class="badges" aria-hidden="true">
@@ -192,10 +184,6 @@ footer .fnote { margin-top: 4px; }
             <li><b>Batch</b><span>Run any tool on a whole folder and save as JPEG, PNG or PSD.</span></li>
             <li><b>Quick bar</b><span>Again repeats the last tool. Arrange, flip, rotate, group, bake generative layers and smart object convert, always one click away.</span></li>
           </ul>
-          <div class="prodFoot">
-            <a class="btn solid" id="gDl" href="https://exchange.adobe.com/apps/cc/ab80f0ba/garvis" target="_blank" rel="noopener noreferrer"><span class="adobeLogo" aria-hidden="true"><svg viewBox="0 0 30 26" xmlns="http://www.w3.org/2000/svg"><path fill="#fa0f00" d="M19 0h11v26zM11.1 0H0v26zM15 9.6L22.1 26h-4.6l-2.1-5.3h-5.4z"/></svg></span>Download from Adobe Marketplace</a>
-          </div>
-          <p class="dlcount" id="gCount" aria-live="polite"><b>50+</b> Downloads</p>
         </article>
 
         <article class="prod m" id="monday">
@@ -216,11 +204,6 @@ footer .fnote { margin-top: 4px; }
             <li><b>Recolor</b><span>Map selected artwork to the nearest swatch of a saved brand palette.</span></li>
             <li><b>Clean up</b><span>Remove unused swatches, empty layers, stray points and hidden objects, with a report.</span></li>
           </ul>
-          <div class="prodFoot">
-            <a class="btn solid" id="mDl" href="https://drive.google.com/file/d/1KhPf5uHFnMJaFnZnCdbB7RjNTx3E8G-T/view?usp=drive_link" target="_blank" rel="noopener noreferrer">Download for Windows</a>
-            <span class="soon">Mac: coming soon</span>
-          </div>
-          <p class="dlcount" id="mCount" aria-live="polite"><b>5+</b> Downloads</p>
         </article>
       </div>
 
@@ -278,24 +261,5 @@ footer .fnote { margin-top: 4px; }
   </footer>
 </div>
 
-<script>
-// Download counts under each Download button: BASE (downloads before the counter existed) + anonymous clicks counted on abacus.jasoncameron.dev (one number per plugin, no accounts, no cookies). If the counter is unreachable the text stays at the BASE.
-(() => {
-  const API = "https://abacus.jasoncameron.dev/";
-  const read = (r) => r.ok ? r.json() : null;
-  const track = (key, base, btnId, outId) => {
-    const out = document.getElementById(outId), btn = document.getElementById(btnId);
-    const apply = (d) => {
-      if (!d || typeof d.value !== "number") return;
-      const b = document.createElement("b"); b.textContent = (base + d.value).toLocaleString() + "+";
-      out.replaceChildren(b, document.createTextNode(" Downloads"));
-    };
-    fetch(API + "get/spoof-by-g/" + key).then(read).then(apply).catch(() => {});
-    btn.addEventListener("click", () => { fetch(API + "hit/spoof-by-g/" + key, { keepalive: true }).then(read).then(apply).catch(() => {}); });
-  };
-  track("garvis-download", 50, "gDl", "gCount");
-  track("monday-download", 5, "mDl", "mCount");
-})();
-</script>
 </body>
 </html>
